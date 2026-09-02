@@ -26,6 +26,26 @@ The starter reads the live ALPH / BAAL pool and displays:
 
 No wallet connection, signer, or transaction is required.
 
+## Simulate a swap
+
+Run a read-only PowFi CPMM quote:
+
+    npm run simulate
+
+The example simulates:
+
+    1 ALPH → BAAL
+
+It displays:
+
+- expected BAAL output
+- minimum output with 1% slippage
+- price impact
+
+The quote uses the live pool state through `powfi.cpmm.simSwap()`.
+
+No wallet connection, signer, or transaction is required.
+
 ## BAAL Testnet
 
 BAAL Token ID:
@@ -48,7 +68,7 @@ Install the exact SDK version used by the BAAL Testnet experiment:
 
 RC38 exposes PowFi tooling for CPMM, CLMM, staking and tokens.
 
-This starter intentionally demonstrates only read-only pool interaction.
+This starter intentionally demonstrates only read-only pool interaction and swap simulation.
 
 ## Disclaimer
 
