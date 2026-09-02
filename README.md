@@ -210,7 +210,7 @@ Pool spot ratios, quotes, and simulated outputs are not valuations, price guaran
 If this toolkit is useful to you and you want to support the work:
 
 <p align="center">
-  <img src="assets/baal-donation-qr.png" width="220" alt="BAAL donation QR code">
+  <img src="assets/baal-donation.png" width="420" alt="BAAL donation — Alephium Underground">
 </p>
 
 **ALPH donation address (Alephium network only):**
