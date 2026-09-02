@@ -1,106 +1,165 @@
 # 😈 BAAL Testnet Starter
 
-A minimal read-only example for exploring the live **ALPH / BAAL** pool on **PowFi / Alephium Testnet**.
+A read-only toolkit for exploring **PowFi RC38 CPMM pools on Alephium Testnet**.
+
+BAAL / ALPH remains the reference pool and default example, while the generic tools can discover, validate, quote, simulate, and analyze other CPMM pairs created by the current RC38 Testnet factory.
 
 ## Environment
 
 - PowFi SDK: `0.0.1-rc.38`
 - Alephium web3: `3.0.3`
 - Network: Alephium Testnet
+- Scope: RC38 CPMM
 - Mode: READ ONLY
+
+No wallet, signer, or transaction is required.
 
 ## Install
 
     npm install
 
-## Run
+## Help
+
+    npm run help
+
+## Read the BAAL reference pool
 
     npm start
 
-The starter reads the live ALPH / BAAL pool and displays:
+This reads the live ALPH / BAAL pool and displays:
 
 - ALPH reserve
 - BAAL reserve
-- BAAL/ALPH spot ratio
-- ALPH/BAAL spot ratio
+- BAAL / ALPH spot ratio
+- ALPH / BAAL spot ratio
 
-No wallet connection, signer, or transaction is required.
+## Discover CPMM pools
+
+    npm run pools
+
+The command discovers CPMM pairs from the current RC38 Testnet TokenPairFactory events.
+
+At the time of the latest runtime validation, 7 CPMM pools were discovered.
+
+Discovery is dynamic: the count may change as new pairs are created.
+
+## Validate discovered pools
+
+    npm run validate
+
+The validator checks the currently discovered RC38 CPMM pairs against the expected RC38 structure.
+
+Validation includes:
+
+- deterministic pool ID verification
+- expected TokenPair code hash
+- raw immutable and mutable field layout
+- runtime field types
+- token IDs stored in the pool state
+
+At the time of the latest runtime validation:
+
+    7/7 RC38 CPMM pools fully validated
+
+This result describes the pools discovered at that time. It is not a guarantee about future pools or other PowFi contract families.
 
 ## Simulate a swap
 
-Run a read-only PowFi CPMM quote:
+Run a read-only CPMM quote:
 
     npm run simulate
 
-By default, the example simulates:
+Default:
 
     1 ALPH → BAAL
 
-You can choose the input amount:
+BAAL shorthand is preserved:
 
     npm run simulate -- 0.1
-    npm run simulate -- 5
-
-ALPH → BAAL is the default direction.
-
-To simulate the reverse direction:
-
+    npm run simulate -- 5 ALPH
     npm run simulate -- 100 BAAL
 
-This simulates BAAL → ALPH.
+Generic CPMM pairs can be selected explicitly:
 
-Amounts support up to 18 decimal places.
+    npm run simulate -- 1 WETH WBTC
+    npm run simulate -- 1 USDTeth USDCeth
 
-It displays:
+Generic syntax:
 
-- expected BAAL output
+    npm run simulate -- <AMOUNT> <TOKEN_IN> <TOKEN_OUT>
+
+The simulator displays:
+
+- expected output
 - minimum output with 1% slippage
 - price impact
 
-The quote uses the live pool state through `powfi.cpmm.simSwap()`.
-
-No wallet connection, signer, or transaction is required.
+The live pool state is resolved first, then the quote is computed locally against that snapshot with `CpmmModule.computeSwapAmount()`.
 
 ## Explore multiple quotes
 
-Compare several swap sizes against the live ALPH / BAAL pool:
+BAAL shorthand:
 
     npm run quotes -- ALPH
-
-For the reverse direction:
-
-    npm run quotes -- BAAL
-
-Custom input sizes are supported:
-
-    npm run quotes -- ALPH 0.1 0.5 1 2 5
     npm run quotes -- BAAL 10 50 100 250 500
 
-The quote explorer displays the expected output and price impact for each input size.
+Generic CPMM pair:
 
-No wallet connection, signer, or transaction is required.
+    npm run quotes -- WETH WBTC 0.01 0.1 1
+    npm run quotes -- USDTeth USDCeth 1 10 100
+
+Generic syntax:
+
+    npm run quotes -- <TOKEN_IN> <TOKEN_OUT> [AMOUNTS...]
+
+For each input size, the explorer displays:
+
+- input amount
+- expected output
+- price impact
+
+Quotes are calculated locally from the resolved live pool snapshot with `CpmmModule.computeSwapAmount()`.
 
 ## Analyze price impact
 
-Estimate the maximum input size before reaching predefined price-impact limits:
+BAAL shorthand:
 
     npm run impact -- ALPH
     npm run impact -- BAAL
 
-The analyzer calculates thresholds for:
+Generic CPMM pair:
+
+    npm run impact -- WETH WBTC
+    npm run impact -- USDTeth USDCeth
+
+The analyzer searches for the maximum input below these price-impact limits:
 
 - 0.5%
-- 1%
-- 2%
-- 5%
+- 1.0%
+- 2.0%
+- 5.0%
 
-The pool state is fetched once and the threshold search is then performed locally with `CpmmModule.computeSwapAmount()` against that same snapshot.
+The selected live CPMM pool state is fetched once. Threshold calculations are then performed locally against that same snapshot with `CpmmModule.computeSwapAmount()`.
 
-This keeps the analysis internally consistent while avoiding repeated network reads.
+## Token resolution
 
-No wallet connection, signer, or transaction is required.
+Known tokens are resolved from the PowFi Testnet token list.
 
-## BAAL Testnet
+The read-only helper also contains an on-chain fungible-token metadata fallback for token IDs not present in that list.
+
+ALPH is handled as the native Alephium token.
+
+## Read-only architecture
+
+The generic CPMM tools use the current RC38 Testnet factory for pair discovery and read TokenPair state directly from the node.
+
+Pool resolution validates the expected RC38 TokenPair code hash and raw state structure before using reserves.
+
+For listed token IDs, pool resolution can skip factory discovery when both token IDs are supplied directly.
+
+All swap and impact calculations in this toolkit are simulations only.
+
+## BAAL Testnet reference
 
 BAAL Token ID:
 
@@ -116,20 +175,26 @@ Pool address:
 
 ## Builders
 
-Install the exact SDK version used by the BAAL Testnet experiment:
+Install the exact SDK version used by this RC38 Testnet experiment:
 
     npm install --save-exact @alephium/powfi-sdk@0.0.1-rc.38
 
-RC38 exposes PowFi tooling for CPMM, CLMM, staking and tokens.
+This repository intentionally focuses on **read-only RC38 CPMM tooling on Alephium Testnet**.
 
-This starter intentionally demonstrates read-only pool interaction, swap simulation, quote exploration, and price-impact analysis.
+It does not claim compatibility with Mainnet, CLMM pools, future PowFi releases, or future contract layouts.
+
+## Safety
+
+- No wallet
+- No signer
+- No transaction
 
 ## Disclaimer
 
 **TESTNET ONLY • EXPERIMENTAL • NO REAL VALUE**
 
-Pool spot ratios are not valuations, price guarantees, or indications of realizable liquidity.
+Pool spot ratios, quotes, and simulated outputs are not valuations, price guarantees, or indications of realizable liquidity.
 
 ---
 
-**BAAL•ALEPHIUM UNDERGROUND** 😈⛓️
+**BAAL • ALEPHIUM UNDERGROUND** 😈⛓️
