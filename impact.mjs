@@ -1,15 +1,9 @@
 import { Powfi, CpmmModule } from "@alephium/powfi-sdk"
 import { web3, NodeProvider } from "@alephium/web3"
+import { resolvePool, formatUnits } from "./lib/powfi-readonly.mjs"
 
 const NODE_URL = "https://node.testnet.alephium.org"
 
-const ALPH =
-  "0000000000000000000000000000000000000000000000000000000000000000"
-
-const BAAL =
-  "72ff515813051a7d9dde6c63efb8ad4bc623a3577c5ecd6fc4e61ba24e87de00"
-
-const ONE = 10n ** 18n
 const THRESHOLDS = [0.5, 1, 2, 5]
 
 const args = process.argv.slice(2)
@@ -19,16 +13,19 @@ if (args.includes("--help") || args.includes("-h")) {
 
 Usage:
   npm run impact
-  npm run impact -- <TOKEN>
+  npm run impact -- <TOKEN_IN>
+  npm run impact -- <TOKEN_IN> <TOKEN_OUT>
   npm run impact -- --help
 
 Arguments:
-  TOKEN     ALPH or BAAL
-            Default: ALPH
+  TOKEN_IN    Input token symbol
+  TOKEN_OUT   Output token symbol
 
-Direction:
-  ALPH      ALPH → BAAL
-  BAAL      BAAL → ALPH
+BAAL shorthand:
+  ALPH        ALPH → BAAL
+  BAAL        BAAL → ALPH
+
+For other PowFi CPMM pairs, TOKEN_OUT is required.
 
 Impact thresholds:
   0.5%
@@ -42,9 +39,11 @@ Output:
   • Expected output
 
 Method:
-  The live ALPH / BAAL pool state is fetched once.
+  The selected live CPMM pool state is fetched once.
   Threshold calculations are then performed locally against
   that same snapshot with CpmmModule.computeSwapAmount().
+
+  Token decimals are resolved dynamically.
 
 Slippage:
   1% (100 bps)
@@ -53,6 +52,8 @@ Examples:
   npm run impact
   npm run impact -- ALPH
   npm run impact -- BAAL
+  npm run impact -- USDTeth USDCeth
+  npm run impact -- WETH WBTC
 
 Environment:
   Network: Alephium Testnet
@@ -74,39 +75,44 @@ const powfi = Powfi.load({
   networkId: "testnet"
 })
 
-function human(value, decimals = 6) {
-  value = BigInt(value)
+const inputToken = process.argv[2] ?? "ALPH"
+const requestedOutputToken = process.argv[3]
 
-  const whole = value / ONE
-  const fraction = (value % ONE)
-    .toString()
-    .padStart(18, "0")
-    .slice(0, decimals)
-    .replace(/0+$/, "")
+let outputToken
 
-  return fraction
-    ? `${whole}.${fraction}`
-    : `${whole}`
+if (requestedOutputToken) {
+  outputToken = requestedOutputToken
+} else {
+  const normalized = inputToken.toUpperCase()
+
+  if (normalized === "ALPH") {
+    outputToken = "BAAL"
+  } else if (normalized === "BAAL") {
+    outputToken = "ALPH"
+  } else {
+    throw new Error(
+      "Output token is required when using a pair other than ALPH / BAAL."
+    )
+  }
 }
 
-const inputSymbol =
-  (process.argv[2] ?? "ALPH").toUpperCase()
+const pool = await resolvePool(
+  await powfi,
+  inputToken,
+  outputToken
+)
 
-if (inputSymbol !== "ALPH" && inputSymbol !== "BAAL") {
-  throw new Error("Token must be ALPH or BAAL.")
-}
+const tokenIn = pool.tokenA
+const tokenOut = pool.tokenB
 
-const outputSymbol =
-  inputSymbol === "ALPH" ? "BAAL" : "ALPH"
+const inputSymbol = tokenIn.symbol
+const outputSymbol = tokenOut.symbol
 
-const tokenInId =
-  inputSymbol === "ALPH" ? ALPH : BAAL
+const tokenInId = tokenIn.id
+const tokenOutId = tokenOut.id
 
-const tokenOutId =
-  inputSymbol === "ALPH" ? BAAL : ALPH
-
-const poolState =
-  await powfi.cpmm.getPoolState(ALPH, BAAL)
+const poolState = pool.state
+const TOKEN_UNIT = 10n ** BigInt(tokenIn.decimals)
 
 function getQuote(amountIn) {
   return CpmmModule.computeSwapAmount({
@@ -120,10 +126,10 @@ function getQuote(amountIn) {
 
 async function findThreshold(targetImpact) {
   let low = 0n
-  let high = ONE
+  let high = TOKEN_UNIT
 
-  if (inputSymbol === "BAAL") {
-    high = 100n * ONE
+  if (inputSymbol === "BAAL" && outputSymbol === "ALPH") {
+    high = 100n * TOKEN_UNIT
   }
 
   let quoteHigh = getQuote(high)
@@ -134,7 +140,7 @@ async function findThreshold(targetImpact) {
 
     quoteHigh = getQuote(high)
 
-    if (high > 1_000_000_000n * ONE) {
+    if (high > 1_000_000_000n * TOKEN_UNIT) {
       throw new Error(
         `Unable to bracket ${targetImpact}% impact`
       )
@@ -185,8 +191,8 @@ for (const threshold of THRESHOLDS) {
 
   console.log(
     `${threshold.toFixed(1)} %`.padEnd(16),
-    `${human(result.amountIn, 9)} ${inputSymbol}`.padEnd(22),
-    `${human(result.quote.tokenOutAmount, 9)} ${outputSymbol}`
+    `${formatUnits(result.amountIn, tokenIn.decimals, 9)} ${inputSymbol}`.padEnd(22),
+    `${formatUnits(result.quote.tokenOutAmount, tokenOut.decimals, 9)} ${outputSymbol}`
   )
 }
 
