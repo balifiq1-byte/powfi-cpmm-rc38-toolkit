@@ -1,4 +1,4 @@
-import { Powfi } from "@alephium/powfi-sdk"
+import { Powfi, CpmmModule } from "@alephium/powfi-sdk"
 import { web3, NodeProvider } from "@alephium/web3"
 import { resolvePool, parseUnits, formatUnits } from "./lib/powfi-readonly.mjs"
 
@@ -113,7 +113,8 @@ console.log(
 )
 console.log()
 
-const quote = await powfi.cpmm.simSwap({
+const quote = CpmmModule.computeSwapAmount({
+  state: pool.state,
   tokenInId,
   tokenOutId,
   amountIn,
