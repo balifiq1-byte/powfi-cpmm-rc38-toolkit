@@ -11,6 +11,49 @@ const BAAL =
 
 const ONE = 10n ** 18n
 
+const args = process.argv.slice(2)
+
+if (args.includes("--help") || args.includes("-h")) {
+  console.log(`😈 BAAL / POWFI SWAP SIMULATOR
+
+Usage:
+  npm run simulate
+  npm run simulate -- <AMOUNT>
+  npm run simulate -- <AMOUNT> <TOKEN>
+  npm run simulate -- --help
+
+Arguments:
+  AMOUNT    Positive amount with up to 18 decimals
+            Default: 1
+
+  TOKEN     ALPH or BAAL
+            Default: ALPH
+
+Direction:
+  ALPH      ALPH → BAAL
+  BAAL      BAAL → ALPH
+
+Examples:
+  npm run simulate
+  npm run simulate -- 0.1
+  npm run simulate -- 5 ALPH
+  npm run simulate -- 100 BAAL
+
+Slippage:
+  1% (100 bps)
+
+Environment:
+  Network: Alephium Testnet
+  PowFi SDK: 0.0.1-rc.38
+  Mode: READ ONLY
+
+Safety:
+  No wallet
+  No signer
+  No transaction`)
+  process.exit(0)
+}
+
 web3.setCurrentNodeProvider(
   new NodeProvider(NODE_URL)
 )

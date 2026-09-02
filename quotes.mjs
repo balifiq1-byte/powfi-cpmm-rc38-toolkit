@@ -11,6 +11,59 @@ const BAAL =
 
 const ONE = 10n ** 18n
 
+const args = process.argv.slice(2)
+
+if (args.includes("--help") || args.includes("-h")) {
+  console.log(`😈 BAAL / POWFI QUOTE EXPLORER
+
+Usage:
+  npm run quotes
+  npm run quotes -- <TOKEN>
+  npm run quotes -- <TOKEN> [AMOUNTS...]
+  npm run quotes -- --help
+
+Arguments:
+  TOKEN      ALPH or BAAL
+             Default: ALPH
+
+  AMOUNTS    Optional positive input amounts
+             Up to 18 decimals each
+
+Direction:
+  ALPH       ALPH → BAAL
+  BAAL       BAAL → ALPH
+
+Default sizes:
+  ALPH       0.1  1  5  10
+  BAAL       10  100  500  1000
+
+Examples:
+  npm run quotes
+  npm run quotes -- ALPH
+  npm run quotes -- BAAL
+  npm run quotes -- ALPH 0.1 0.5 1 2 5
+  npm run quotes -- BAAL 10 50 100 250 500
+
+Output:
+  • Input amount
+  • Expected output
+  • Price impact
+
+Slippage:
+  1% (100 bps)
+
+Environment:
+  Network: Alephium Testnet
+  PowFi SDK: 0.0.1-rc.38
+  Mode: READ ONLY
+
+Safety:
+  No wallet
+  No signer
+  No transaction`)
+  process.exit(0)
+}
+
 web3.setCurrentNodeProvider(
   new NodeProvider(NODE_URL)
 )

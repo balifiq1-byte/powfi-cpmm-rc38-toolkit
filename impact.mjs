@@ -12,6 +12,60 @@ const BAAL =
 const ONE = 10n ** 18n
 const THRESHOLDS = [0.5, 1, 2, 5]
 
+const args = process.argv.slice(2)
+
+if (args.includes("--help") || args.includes("-h")) {
+  console.log(`😈 BAAL / POWFI IMPACT ANALYZER
+
+Usage:
+  npm run impact
+  npm run impact -- <TOKEN>
+  npm run impact -- --help
+
+Arguments:
+  TOKEN     ALPH or BAAL
+            Default: ALPH
+
+Direction:
+  ALPH      ALPH → BAAL
+  BAAL      BAAL → ALPH
+
+Impact thresholds:
+  0.5%
+  1.0%
+  2.0%
+  5.0%
+
+Output:
+  • Price-impact limit
+  • Maximum input below the limit
+  • Expected output
+
+Method:
+  The live ALPH / BAAL pool state is fetched once.
+  Threshold calculations are then performed locally against
+  that same snapshot with CpmmModule.computeSwapAmount().
+
+Slippage:
+  1% (100 bps)
+
+Examples:
+  npm run impact
+  npm run impact -- ALPH
+  npm run impact -- BAAL
+
+Environment:
+  Network: Alephium Testnet
+  PowFi SDK: 0.0.1-rc.38
+  Mode: READ ONLY
+
+Safety:
+  No wallet
+  No signer
+  No transaction`)
+  process.exit(0)
+}
+
 web3.setCurrentNodeProvider(
   new NodeProvider(NODE_URL)
 )

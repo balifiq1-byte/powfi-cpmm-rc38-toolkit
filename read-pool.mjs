@@ -11,6 +11,35 @@ const BAAL =
 
 const ONE = 10n ** 18n
 
+const args = process.argv.slice(2)
+
+if (args.includes("--help") || args.includes("-h")) {
+  console.log(`😈 BAAL / POWFI TESTNET
+
+Usage:
+  npm start
+  npm start -- --help
+
+Description:
+  Read the live ALPH / BAAL CPMM pool on Alephium Testnet.
+
+Output:
+  • ALPH reserve
+  • BAAL reserve
+  • BAAL / ALPH spot ratios
+
+Environment:
+  Network: Alephium Testnet
+  PowFi SDK: 0.0.1-rc.38
+  Mode: READ ONLY
+
+Safety:
+  No wallet
+  No signer
+  No transaction`)
+  process.exit(0)
+}
+
 web3.setCurrentNodeProvider(
   new NodeProvider(NODE_URL)
 )
