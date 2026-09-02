@@ -8,6 +8,8 @@ Commands:
   simulate    Simulate a single swap
   quotes      Explore quotes for multiple swap sizes
   impact      Analyze price-impact thresholds
+  pools       Discover CPMM pools
+  validate    Validate discovered RC38 CPMM pools
   help        Show this menu
 
 Command help:
@@ -15,15 +17,20 @@ Command help:
   npm run simulate -- --help
   npm run quotes -- --help
   npm run impact -- --help
+  npm run pools
+  npm run validate
 
 Quick examples:
   npm start
   npm run simulate -- 1 ALPH
   npm run simulate -- 100 BAAL
+  npm run simulate -- 0.001 WETH WBTC
   npm run quotes -- ALPH 0.1 0.5 1 2 5
-  npm run quotes -- BAAL 10 50 100 250 500
+  npm run quotes -- WETH WBTC 0.001 0.005 0.01
   npm run impact -- ALPH
-  npm run impact -- BAAL
+  npm run impact -- WETH WBTC
+  npm run pools
+  npm run validate
 
 Environment:
   Network: Alephium Testnet
