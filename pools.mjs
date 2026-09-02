@@ -11,7 +11,7 @@ web3.setCurrentNodeProvider(new NodeProvider(NODE_URL));
 const powfi = await Powfi.load({ networkId: "testnet" });
 
 const pairs = await discoverCpmmPairs();
-const discoveredTokens = await discoverCpmmTokens(powfi);
+const discoveredTokens = await discoverCpmmTokens(powfi, pairs);
 const tokens = new Map(discoveredTokens.map((token) => [token.id, token]));
 
 console.log("POWFI CPMM POOLS - TESTNET");
