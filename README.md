@@ -61,6 +61,45 @@ The quote uses the live pool state through `powfi.cpmm.simSwap()`.
 
 No wallet connection, signer, or transaction is required.
 
+## Explore multiple quotes
+
+Compare several swap sizes against the live ALPH / BAAL pool:
+
+    npm run quotes -- ALPH
+
+For the reverse direction:
+
+    npm run quotes -- BAAL
+
+Custom input sizes are supported:
+
+    npm run quotes -- ALPH 0.1 0.5 1 2 5
+    npm run quotes -- BAAL 10 50 100 250 500
+
+The quote explorer displays the expected output and price impact for each input size.
+
+No wallet connection, signer, or transaction is required.
+
+## Analyze price impact
+
+Estimate the maximum input size before reaching predefined price-impact limits:
+
+    npm run impact -- ALPH
+    npm run impact -- BAAL
+
+The analyzer calculates thresholds for:
+
+- 0.5%
+- 1%
+- 2%
+- 5%
+
+The pool state is fetched once and the threshold search is then performed locally with `CpmmModule.computeSwapAmount()` against that same snapshot.
+
+This keeps the analysis internally consistent while avoiding repeated network reads.
+
+No wallet connection, signer, or transaction is required.
+
 ## BAAL Testnet
 
 BAAL Token ID:
@@ -83,7 +122,7 @@ Install the exact SDK version used by the BAAL Testnet experiment:
 
 RC38 exposes PowFi tooling for CPMM, CLMM, staking and tokens.
 
-This starter intentionally demonstrates only read-only pool interaction and swap simulation.
+This starter intentionally demonstrates read-only pool interaction, swap simulation, quote exploration, and price-impact analysis.
 
 ## Disclaimer
 
