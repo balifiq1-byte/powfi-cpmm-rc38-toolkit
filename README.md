@@ -1,4 +1,12 @@
+<p align="center">
+  <img src="assets/powfi-cpmm-rc38-banner.png" width="100%" alt="PowFi CPMM RC38 Toolkit — Alephium Testnet">
+</p>
+
 # PowFi CPMM RC38 Toolkit
+
+<p align="center">
+  <img src="assets/baal-token.png" width="320" alt="BAAL — Alephium Underground">
+</p>
 
 A read-only toolkit for exploring **PowFi RC38 CPMM pools on Alephium Testnet**.
 
@@ -194,6 +202,22 @@ It does not claim compatibility with Mainnet, CLMM pools, future PowFi releases,
 **TESTNET ONLY • EXPERIMENTAL • NO REAL VALUE**
 
 Pool spot ratios, quotes, and simulated outputs are not valuations, price guarantees, or indications of realizable liquidity.
+
+---
+
+## Support the Underground
+
+If this toolkit is useful to you and you want to support the work:
+
+<p align="center">
+  <img src="assets/baal-donation-qr.png" width="220" alt="BAAL donation QR code">
+</p>
+
+**ALPH donation address (Alephium network only):**
+
+`167iHgxZWWxCmtHEKx2izcAcbZM9y3L238VsstbwSNJZo`
+
+**BAAL/4LΞPH1UM |ND3RGR0()D**
 
 ---
 
