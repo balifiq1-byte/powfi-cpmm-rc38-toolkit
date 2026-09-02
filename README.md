@@ -36,10 +36,18 @@ By default, the example simulates:
 
     1 ALPH → BAAL
 
-You can also choose the ALPH input amount:
+You can choose the input amount:
 
     npm run simulate -- 0.1
     npm run simulate -- 5
+
+ALPH → BAAL is the default direction.
+
+To simulate the reverse direction:
+
+    npm run simulate -- 100 BAAL
+
+This simulates BAAL → ALPH.
 
 Amounts support up to 18 decimal places.
 

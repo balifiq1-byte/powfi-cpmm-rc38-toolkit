@@ -41,10 +41,10 @@ console.log("Network: Alephium Testnet")
 console.log("PowFi SDK: 0.0.1-rc.38")
 console.log()
 
-function parseAlph(value) {
+function parseAmount(value) {
   if (!/^(?:\d+)(?:\.\d{1,18})?$/.test(value)) {
     throw new Error(
-      "Invalid ALPH amount. Use a positive number with up to 18 decimals."
+      "Invalid amount. Use a positive number with up to 18 decimals."
     )
   }
 
@@ -54,23 +54,34 @@ function parseAlph(value) {
     BigInt(fraction.padEnd(18, "0") || "0")
 
   if (amount <= 0n) {
-    throw new Error("ALPH amount must be greater than zero.")
+    throw new Error("Amount must be greater than zero.")
   }
 
   return amount
 }
 
 const input = process.argv[2] ?? "1"
-const amountIn = parseAlph(input)
+const inputSymbol = (process.argv[3] ?? "ALPH").toUpperCase()
+
+if (inputSymbol !== "ALPH" && inputSymbol !== "BAAL") {
+  throw new Error("Token must be ALPH or BAAL.")
+}
+
+const amountIn = parseAmount(input)
+
+const tokenInId = inputSymbol === "ALPH" ? ALPH : BAAL
+const tokenOutId = inputSymbol === "ALPH" ? BAAL : ALPH
+
+const outputSymbol = inputSymbol === "ALPH" ? "BAAL" : "ALPH"
 
 console.log(
-  `Simulating: ${human(amountIn, 18)} ALPH → BAAL`
+  `Simulating: ${human(amountIn, 18)} ${inputSymbol} → ${outputSymbol}`
 )
 console.log()
 
 const quote = await powfi.cpmm.simSwap({
-  tokenInId: ALPH,
-  tokenOutId: BAAL,
+  tokenInId,
+  tokenOutId,
   amountIn,
   slippageBps: 100n
 })
@@ -78,13 +89,13 @@ const quote = await powfi.cpmm.simSwap({
 console.log(
   "Expected output:",
   human(quote.tokenOutAmount, 9),
-  "BAAL"
+  outputSymbol
 )
 
 console.log(
   "Minimum output:",
   human(quote.minimalTokenOutAmount, 9),
-  "BAAL"
+  outputSymbol
 )
 
 console.log(
