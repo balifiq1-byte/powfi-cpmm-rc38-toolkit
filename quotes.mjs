@@ -1,15 +1,8 @@
 import { Powfi } from "@alephium/powfi-sdk"
 import { web3, NodeProvider } from "@alephium/web3"
+import { resolvePool, parseUnits, formatUnits } from "./lib/powfi-readonly.mjs"
 
 const NODE_URL = "https://node.testnet.alephium.org"
-
-const ALPH =
-  "0000000000000000000000000000000000000000000000000000000000000000"
-
-const BAAL =
-  "72ff515813051a7d9dde6c63efb8ad4bc623a3577c5ecd6fc4e61ba24e87de00"
-
-const ONE = 10n ** 18n
 
 const args = process.argv.slice(2)
 
@@ -18,36 +11,43 @@ if (args.includes("--help") || args.includes("-h")) {
 
 Usage:
   npm run quotes
-  npm run quotes -- <TOKEN>
-  npm run quotes -- <TOKEN> [AMOUNTS...]
+  npm run quotes -- <TOKEN_IN>
+  npm run quotes -- <TOKEN_IN> [AMOUNTS...]
+  npm run quotes -- <TOKEN_IN> <TOKEN_OUT> [AMOUNTS...]
   npm run quotes -- --help
 
 Arguments:
-  TOKEN      ALPH or BAAL
-             Default: ALPH
+  TOKEN_IN    Input token symbol from the PowFi token list
+              Default: ALPH
 
-  AMOUNTS    Optional positive input amounts
-             Up to 18 decimals each
+  TOKEN_OUT   Output token symbol
+              Required for generic pairs
 
-Direction:
-  ALPH       ALPH → BAAL
-  BAAL       BAAL → ALPH
+  AMOUNTS     Optional positive input amounts
+              Decimal precision follows TOKEN_IN
 
-Default sizes:
-  ALPH       0.1  1  5  10
-  BAAL       10  100  500  1000
+BAAL shorthand:
+  ALPH        ALPH → BAAL
+  BAAL        BAAL → ALPH
+
+Default BAAL sizes:
+  ALPH        0.1  1  5  10
+  BAAL        10  100  500  1000
+
+Generic default sizes:
+  0.1  1  5  10
 
 Examples:
   npm run quotes
   npm run quotes -- ALPH
-  npm run quotes -- BAAL
-  npm run quotes -- ALPH 0.1 0.5 1 2 5
   npm run quotes -- BAAL 10 50 100 250 500
+  npm run quotes -- WETH WBTC 0.01 0.1 1
+  npm run quotes -- USDTeth USDCeth 1 10 100
 
 Output:
-  • Input amount
-  • Expected output
-  • Price impact
+  Input amount
+  Expected output
+  Price impact
 
 Slippage:
   1% (100 bps)
@@ -72,57 +72,57 @@ const powfi = Powfi.load({
   networkId: "testnet"
 })
 
-function parseAmount(value) {
-  if (!/^(?:\d+)(?:\.\d{1,18})?$/.test(value)) {
-    throw new Error(`Invalid amount: ${value}`)
+const inputToken = process.argv[2] ?? "ALPH"
+const remainingArgs = process.argv.slice(3)
+
+const looksLikeAmount = (value) =>
+  /^(?:\d+)(?:\.\d+)?$/.test(value)
+
+let outputToken
+let requestedSizes
+
+if (remainingArgs.length > 0 && !looksLikeAmount(remainingArgs[0])) {
+  outputToken = remainingArgs[0]
+  requestedSizes = remainingArgs.slice(1)
+} else {
+  const normalized = inputToken.toUpperCase()
+
+  if (normalized === "ALPH") {
+    outputToken = "BAAL"
+  } else if (normalized === "BAAL") {
+    outputToken = "ALPH"
+  } else {
+    throw new Error(
+      "Output token is required when using a pair other than ALPH / BAAL."
+    )
   }
 
-  const [whole, fraction = ""] = value.split(".")
-
-  return (
-    BigInt(whole) * ONE +
-    BigInt(fraction.padEnd(18, "0") || "0")
-  )
+  requestedSizes = remainingArgs
 }
 
-function human(value, decimals = 6) {
-  value = BigInt(value)
+const pool = await resolvePool(
+  await powfi,
+  inputToken,
+  outputToken
+)
 
-  const whole = value / ONE
-  const fraction = (value % ONE)
-    .toString()
-    .padStart(18, "0")
-    .slice(0, decimals)
-    .replace(/0+$/, "")
+const tokenIn = pool.tokenA
+const tokenOut = pool.tokenB
 
-  return fraction
-    ? `${whole}.${fraction}`
-    : `${whole}`
-}
+const inputSymbol = tokenIn.symbol
+const outputSymbol = tokenOut.symbol
 
-const inputSymbol = (process.argv[2] ?? "ALPH").toUpperCase()
-
-if (inputSymbol !== "ALPH" && inputSymbol !== "BAAL") {
-  throw new Error("Token must be ALPH or BAAL.")
-}
-
-const outputSymbol =
-  inputSymbol === "ALPH" ? "BAAL" : "ALPH"
-
-const tokenInId =
-  inputSymbol === "ALPH" ? ALPH : BAAL
-
-const tokenOutId =
-  inputSymbol === "ALPH" ? BAAL : ALPH
-
-const requestedSizes = process.argv.slice(3)
+const tokenInId = tokenIn.id
+const tokenOutId = tokenOut.id
 
 const sizes =
   requestedSizes.length > 0
     ? requestedSizes
-    : inputSymbol === "ALPH"
+    : inputSymbol === "ALPH" && outputSymbol === "BAAL"
       ? ["0.1", "1", "5", "10"]
-      : ["10", "100", "500", "1000"]
+      : inputSymbol === "BAAL" && outputSymbol === "ALPH"
+        ? ["10", "100", "500", "1000"]
+        : ["0.1", "1", "5", "10"]
 
 console.log("😈 BAAL / POWFI QUOTE EXPLORER")
 console.log("-----------------------------")
@@ -142,7 +142,7 @@ console.log(
 console.log("-".repeat(56))
 
 for (const size of sizes) {
-  const amountIn = parseAmount(size)
+  const amountIn = parseUnits(size, tokenIn.decimals)
 
   const quote = await powfi.cpmm.simSwap({
     tokenInId,
@@ -152,10 +152,10 @@ for (const size of sizes) {
   })
 
   const input =
-    `${human(amountIn, 18)} ${inputSymbol}`
+    `${formatUnits(amountIn, tokenIn.decimals)} ${inputSymbol}`
 
   const output =
-    `${human(quote.tokenOutAmount, 9)} ${outputSymbol}`
+    `${formatUnits(quote.tokenOutAmount, tokenOut.decimals, 9)} ${outputSymbol}`
 
   const impact =
     `${quote.priceImpact.toFixed(6)} %`
