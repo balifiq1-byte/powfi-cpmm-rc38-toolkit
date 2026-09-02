@@ -1,6 +1,6 @@
 {
   "name": "powfi-cpmm-rc38-toolkit",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "description": "Read-only PowFi CPMM RC38 toolkit for Alephium Testnet",
