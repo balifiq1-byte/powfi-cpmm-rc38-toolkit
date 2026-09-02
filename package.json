@@ -9,7 +9,8 @@
     "simulate": "node simulate-swap.mjs",
     "quotes": "node quotes.mjs",
     "impact": "node impact.mjs",
-    "help": "node help.mjs"
+    "help": "node help.mjs",
+    "pools": "node pools.mjs"
   },
   "dependencies": {
     "@alephium/powfi-sdk": "0.0.1-rc.38",
