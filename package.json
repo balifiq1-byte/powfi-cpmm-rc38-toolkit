@@ -10,7 +10,8 @@
     "quotes": "node quotes.mjs",
     "impact": "node impact.mjs",
     "help": "node help.mjs",
-    "pools": "node pools.mjs"
+    "pools": "node pools.mjs",
+    "validate": "node validate.mjs"
   },
   "dependencies": {
     "@alephium/powfi-sdk": "0.0.1-rc.38",
