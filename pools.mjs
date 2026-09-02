@@ -2,7 +2,8 @@ import { web3, NodeProvider } from "@alephium/web3";
 import { Powfi } from "@alephium/powfi-sdk";
 import {
   discoverCpmmPairs,
-  discoverCpmmTokens
+  discoverCpmmTokens,
+  validateCpmmPairs
 } from "./lib/powfi-readonly.mjs";
 
 const NODE_URL = "https://node.testnet.alephium.org";
@@ -10,7 +11,10 @@ const NODE_URL = "https://node.testnet.alephium.org";
 web3.setCurrentNodeProvider(new NodeProvider(NODE_URL));
 const powfi = await Powfi.load({ networkId: "testnet" });
 
-const pairs = await discoverCpmmPairs();
+const pairs = validateCpmmPairs(
+  powfi,
+  await discoverCpmmPairs()
+);
 const discoveredTokens = await discoverCpmmTokens(powfi, pairs);
 const tokens = new Map(discoveredTokens.map((token) => [token.id, token]));
 
