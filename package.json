@@ -1,0 +1,14 @@
+{
+  "name": "baal-testnet-starter",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Read-only BAAL / PowFi Testnet starter kit",
+  "scripts": {
+    "start": "node read-pool.mjs"
+  },
+  "dependencies": {
+    "@alephium/powfi-sdk": "0.0.1-rc.38",
+    "@alephium/web3": "3.0.3"
+  }
+}
