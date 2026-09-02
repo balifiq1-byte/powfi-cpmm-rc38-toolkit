@@ -6,7 +6,8 @@
   "description": "Read-only BAAL / PowFi Testnet starter kit",
   "scripts": {
     "start": "node read-pool.mjs",
-    "simulate": "node simulate-swap.mjs"
+    "simulate": "node simulate-swap.mjs",
+    "quotes": "node quotes.mjs"
   },
   "dependencies": {
     "@alephium/powfi-sdk": "0.0.1-rc.38",
