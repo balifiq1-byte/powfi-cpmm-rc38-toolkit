@@ -32,9 +32,16 @@ Run a read-only PowFi CPMM quote:
 
     npm run simulate
 
-The example simulates:
+By default, the example simulates:
 
     1 ALPH → BAAL
+
+You can also choose the ALPH input amount:
+
+    npm run simulate -- 0.1
+    npm run simulate -- 5
+
+Amounts support up to 18 decimal places.
 
 It displays:
 

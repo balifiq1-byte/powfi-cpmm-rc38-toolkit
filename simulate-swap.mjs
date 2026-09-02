@@ -41,9 +41,31 @@ console.log("Network: Alephium Testnet")
 console.log("PowFi SDK: 0.0.1-rc.38")
 console.log()
 
-const amountIn = ONE
+function parseAlph(value) {
+  if (!/^(?:\d+)(?:\.\d{1,18})?$/.test(value)) {
+    throw new Error(
+      "Invalid ALPH amount. Use a positive number with up to 18 decimals."
+    )
+  }
 
-console.log("Simulating: 1 ALPH → BAAL")
+  const [whole, fraction = ""] = value.split(".")
+  const amount =
+    BigInt(whole) * ONE +
+    BigInt(fraction.padEnd(18, "0") || "0")
+
+  if (amount <= 0n) {
+    throw new Error("ALPH amount must be greater than zero.")
+  }
+
+  return amount
+}
+
+const input = process.argv[2] ?? "1"
+const amountIn = parseAlph(input)
+
+console.log(
+  `Simulating: ${human(amountIn, 18)} ALPH → BAAL`
+)
 console.log()
 
 const quote = await powfi.cpmm.simSwap({
