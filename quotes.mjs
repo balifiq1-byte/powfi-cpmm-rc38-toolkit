@@ -62,10 +62,14 @@ const tokenInId =
 const tokenOutId =
   inputSymbol === "ALPH" ? BAAL : ALPH
 
+const requestedSizes = process.argv.slice(3)
+
 const sizes =
-  inputSymbol === "ALPH"
-    ? ["0.1", "1", "5", "10"]
-    : ["10", "100", "500", "1000"]
+  requestedSizes.length > 0
+    ? requestedSizes
+    : inputSymbol === "ALPH"
+      ? ["0.1", "1", "5", "10"]
+      : ["10", "100", "500", "1000"]
 
 console.log("😈 BAAL / POWFI QUOTE EXPLORER")
 console.log("-----------------------------")
