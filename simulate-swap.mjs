@@ -7,7 +7,7 @@ const NODE_URL = "https://node.testnet.alephium.org"
 const args = process.argv.slice(2)
 
 if (args.includes("--help") || args.includes("-h")) {
-  console.log(`😈 BAAL / POWFI SWAP SIMULATOR
+  console.log(`POWFI CPMM RC38 SWAP SIMULATOR
 
 Usage:
   npm run simulate
@@ -62,7 +62,7 @@ const powfi = Powfi.load({
   networkId: "testnet"
 })
 
-console.log("😈 BAAL / POWFI SWAP SIMULATOR")
+console.log("POWFI CPMM RC38 SWAP SIMULATOR")
 console.log("------------------------------")
 console.log("Mode: READ ONLY")
 console.log("Network: Alephium Testnet")

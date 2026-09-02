@@ -1,4 +1,4 @@
-console.log(`😈 BAAL / POWFI TESTNET STARTER
+console.log(`POWFI CPMM RC38 TOOLKIT
 
 Usage:
   npm run <COMMAND> [OPTIONS]

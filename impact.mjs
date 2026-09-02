@@ -9,7 +9,7 @@ const THRESHOLDS = [0.5, 1, 2, 5]
 const args = process.argv.slice(2)
 
 if (args.includes("--help") || args.includes("-h")) {
-  console.log(`😈 BAAL / POWFI IMPACT ANALYZER
+  console.log(`POWFI CPMM RC38 IMPACT ANALYZER
 
 Usage:
   npm run impact
@@ -171,7 +171,7 @@ async function findThreshold(targetImpact) {
   }
 }
 
-console.log("😈 BAAL / POWFI IMPACT ANALYZER")
+console.log("POWFI CPMM RC38 IMPACT ANALYZER")
 console.log("-----------------------------")
 console.log("Mode: READ ONLY")
 console.log("Network: Alephium Testnet")

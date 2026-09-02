@@ -1,4 +1,4 @@
-# 😈 BAAL Testnet Starter
+# PowFi CPMM RC38 Toolkit
 
 A read-only toolkit for exploring **PowFi RC38 CPMM pools on Alephium Testnet**.
 

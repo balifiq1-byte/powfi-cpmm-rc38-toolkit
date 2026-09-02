@@ -7,7 +7,7 @@ const NODE_URL = "https://node.testnet.alephium.org"
 const args = process.argv.slice(2)
 
 if (args.includes("--help") || args.includes("-h")) {
-  console.log(`😈 BAAL / POWFI QUOTE EXPLORER
+  console.log(`POWFI CPMM RC38 QUOTE EXPLORER
 
 Usage:
   npm run quotes
@@ -124,7 +124,7 @@ const sizes =
         ? ["10", "100", "500", "1000"]
         : ["0.1", "1", "5", "10"]
 
-console.log("😈 BAAL / POWFI QUOTE EXPLORER")
+console.log("POWFI CPMM RC38 QUOTE EXPLORER")
 console.log("-----------------------------")
 console.log("Mode: READ ONLY")
 console.log("Network: Alephium Testnet")
