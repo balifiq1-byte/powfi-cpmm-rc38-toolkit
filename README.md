@@ -8,16 +8,18 @@
   <img src="assets/baal-token.png" width="320" alt="BAAL — Alephium Underground">
 </p>
 
-A read-only toolkit for exploring **PowFi RC38 CPMM pools on Alephium Testnet**.
+A read-only toolkit for exploring **PowFi RC38 pools on Alephium Testnet**.
 
-BAAL / ALPH remains the reference pool and default example, while the generic tools can discover, validate, quote, simulate, and analyze other CPMM pairs created by the current RC38 Testnet factory.
+BAAL / ALPH remains the reference CPMM pool and default example. The generic CPMM tools can discover, validate, quote, simulate, and analyze pairs created by the current RC38 Testnet factory.
+
+Experimental read-only CLMM inspection is also available for the current RC38 Testnet deployment.
 
 ## Environment
 
 - PowFi SDK: `0.0.1-rc.38`
 - Alephium web3: `3.0.3`
 - Network: Alephium Testnet
-- Scope: RC38 CPMM
+- Scope: RC38 CPMM + experimental CLMM inspection
 - Mode: READ ONLY
 
 No wallet, signer, or transaction is required.
@@ -167,6 +169,26 @@ For listed token IDs, pool resolution can skip factory discovery when both token
 
 All swap and impact calculations in this toolkit are simulations only.
 
+## Experimental CLMM inspection
+
+Discover and inspect the CLMM pools created by the current RC38 Testnet PoolFactory:
+
+    npm run clmm-pools
+
+The CLMM reader currently:
+
+- discovers pools from `PoolCreated` factory events
+- derives pool addresses from their contract IDs
+- reads raw pool state directly from the Alephium node
+- validates token0, token1, and config index against the creation event
+- resolves token metadata and decimals
+- reads fee, tick spacing, current tick, liquidity, and NFT index
+- derives the human token1/token0 price from `sqrtPriceX96` using the resolved token decimals
+
+This CLMM support is intentionally **experimental and read-only**. It targets the contract layout observed and runtime-validated with PowFi `0.0.1-rc.38` on Alephium Testnet.
+
+It does not create positions, mint NFTs, swap tokens, sign transactions, or submit transactions.
+
 ## BAAL Testnet reference
 
 BAAL Token ID:
@@ -187,9 +209,11 @@ Install the exact SDK version used by this RC38 Testnet experiment:
 
     npm install --save-exact @alephium/powfi-sdk@0.0.1-rc.38
 
-This repository intentionally focuses on **read-only RC38 CPMM tooling on Alephium Testnet**.
+This repository intentionally focuses on **read-only PowFi RC38 tooling on Alephium Testnet**.
 
-It does not claim compatibility with Mainnet, CLMM pools, future PowFi releases, or future contract layouts.
+CPMM tooling is the primary scope. CLMM support is limited to experimental read-only inspection of the current RC38 Testnet deployment.
+
+It does not claim compatibility with Mainnet, future PowFi releases, or future contract layouts.
 
 ## Safety
 

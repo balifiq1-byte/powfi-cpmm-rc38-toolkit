@@ -10,6 +10,7 @@ Commands:
   impact      Analyze price-impact thresholds
   pools       Discover CPMM pools
   validate    Validate discovered RC38 CPMM pools
+  clmm-pools  Inspect RC38 CLMM pools (experimental)
   help        Show this menu
 
 Command help:
@@ -19,6 +20,7 @@ Command help:
   npm run impact -- --help
   npm run pools
   npm run validate
+  npm run clmm-pools
 
 Quick examples:
   npm start
@@ -31,6 +33,7 @@ Quick examples:
   npm run impact -- WETH WBTC
   npm run pools
   npm run validate
+  npm run clmm-pools
 
 Environment:
   Network: Alephium Testnet

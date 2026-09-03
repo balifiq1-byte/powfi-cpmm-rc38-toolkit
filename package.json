@@ -1,9 +1,9 @@
 {
   "name": "powfi-cpmm-rc38-toolkit",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "private": true,
   "type": "module",
-  "description": "Read-only PowFi CPMM RC38 toolkit for Alephium Testnet",
+  "description": "Read-only PowFi RC38 toolkit for Alephium Testnet",
   "scripts": {
     "start": "node read-pool.mjs",
     "simulate": "node simulate-swap.mjs",
@@ -11,7 +11,8 @@
     "impact": "node impact.mjs",
     "help": "node help.mjs",
     "pools": "node pools.mjs",
-    "validate": "node validate.mjs"
+    "validate": "node validate.mjs",
+    "clmm-pools": "node clmm-pools.mjs"
   },
   "dependencies": {
     "@alephium/powfi-sdk": "0.0.1-rc.38",
