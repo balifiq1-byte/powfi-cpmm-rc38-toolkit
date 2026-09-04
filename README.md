@@ -12,14 +12,14 @@ A read-only toolkit for exploring **PowFi RC38 pools on Alephium Testnet**.
 
 BAAL / ALPH remains the reference CPMM pool and default example. The generic CPMM tools can discover, validate, quote, simulate, and analyze pairs created by the current RC38 Testnet factory.
 
-Experimental read-only CLMM inspection is also available for the current RC38 Testnet deployment.
+Experimental read-only CLMM inspection and contract-backed quotes are also available for the current RC38 Testnet deployment.
 
 ## Environment
 
 - PowFi SDK: `0.0.1-rc.38`
 - Alephium web3: `3.0.3`
 - Network: Alephium Testnet
-- Scope: RC38 CPMM + experimental CLMM inspection
+- Scope: RC38 CPMM + experimental CLMM inspection and quotes
 - Mode: READ ONLY
 
 No wallet, signer, or transaction is required.
@@ -169,7 +169,7 @@ For listed token IDs, pool resolution can skip factory discovery when both token
 
 All swap and impact calculations in this toolkit are simulations only.
 
-## Experimental CLMM inspection
+## Experimental CLMM inspection and quotes
 
 Discover and inspect the CLMM pools created by the current RC38 Testnet PoolFactory:
 
@@ -184,6 +184,23 @@ The CLMM reader currently:
 - resolves token metadata and decimals
 - reads fee, tick spacing, current tick, liquidity, and NFT index
 - derives the human token1/token0 price from `sqrtPriceX96` using the resolved token decimals
+
+Experimental contract-backed CLMM quotes are also available:
+
+    npm run clmm-quote -- <tokenInId> <tokenOutId> <amount>
+
+The CLMM quote command:
+
+- resolves input and output token decimals
+- identifies the matching discovered CLMM pool
+- determines the swap direction from token0/token1
+- calls the RC38 Pool `simulateSwap` method in read-only mode
+- reads the two contract-returned `I256` token deltas
+- derives the exact raw output amount from the returned output delta
+- formats input and output amounts using their resolved token decimals
+- reports fee pips and simulation price-state telemetry
+
+The quote path has been runtime-tested in both swap directions and with 18→18, 6→8, and 8→6 token decimal combinations.
 
 This CLMM support is intentionally **experimental and read-only**. It targets the contract layout observed and runtime-validated with PowFi `0.0.1-rc.38` on Alephium Testnet.
 
@@ -211,7 +228,7 @@ Install the exact SDK version used by this RC38 Testnet experiment:
 
 This repository intentionally focuses on **read-only PowFi RC38 tooling on Alephium Testnet**.
 
-CPMM tooling is the primary scope. CLMM support is limited to experimental read-only inspection of the current RC38 Testnet deployment.
+CPMM tooling is the primary scope. CLMM support is limited to experimental read-only inspection and contract-backed quotes for the current RC38 Testnet deployment.
 
 It does not claim compatibility with Mainnet, future PowFi releases, or future contract layouts.
 

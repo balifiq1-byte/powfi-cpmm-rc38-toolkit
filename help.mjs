@@ -11,6 +11,7 @@ Commands:
   pools       Discover CPMM pools
   validate    Validate discovered RC38 CPMM pools
   clmm-pools  Inspect RC38 CLMM pools (experimental)
+  clmm-quote  Quote an RC38 CLMM swap (experimental)
   help        Show this menu
 
 Command help:
@@ -21,6 +22,7 @@ Command help:
   npm run pools
   npm run validate
   npm run clmm-pools
+  npm run clmm-quote -- <tokenInId> <tokenOutId> <amount>
 
 Quick examples:
   npm start
@@ -34,6 +36,7 @@ Quick examples:
   npm run pools
   npm run validate
   npm run clmm-pools
+  npm run clmm-quote -- <tokenInId> <tokenOutId> 0.1
 
 Environment:
   Network: Alephium Testnet

@@ -1,6 +1,6 @@
 {
   "name": "powfi-cpmm-rc38-toolkit",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "private": true,
   "type": "module",
   "description": "Read-only PowFi RC38 toolkit for Alephium Testnet",
@@ -12,7 +12,8 @@
     "help": "node help.mjs",
     "pools": "node pools.mjs",
     "validate": "node validate.mjs",
-    "clmm-pools": "node clmm-pools.mjs"
+    "clmm-pools": "node clmm-pools.mjs",
+    "clmm-quote": "node clmm-quote.mjs"
   },
   "dependencies": {
     "@alephium/powfi-sdk": "0.0.1-rc.38",
