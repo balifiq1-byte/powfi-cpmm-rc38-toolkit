@@ -8,18 +8,18 @@
   <img src="assets/baal-token.png" width="320" alt="BAAL — Alephium Underground">
 </p>
 
-A read-only toolkit for exploring **PowFi RC38 pools on Alephium Testnet**.
+A read-only toolkit for exploring **PowFi RC38 pools and staking on Alephium Testnet**.
 
 BAAL / ALPH remains the reference CPMM pool and default example. The generic CPMM tools can discover, validate, quote, simulate, and analyze pairs created by the current RC38 Testnet factory.
 
-Experimental read-only CLMM inspection and contract-backed quotes are also available for the current RC38 Testnet deployment.
+Experimental read-only CLMM inspection, contract-backed quotes, and staking inspection are also available for the current RC38 Testnet deployment.
 
 ## Environment
 
 - PowFi SDK: `0.0.1-rc.38`
 - Alephium web3: `3.0.3`
 - Network: Alephium Testnet
-- Scope: RC38 CPMM + experimental CLMM inspection and quotes
+- Scope: RC38 CPMM + experimental CLMM inspection and quotes + experimental staking inspection
 - Mode: READ ONLY
 
 No wallet, signer, or transaction is required.
@@ -206,6 +206,39 @@ This CLMM support is intentionally **experimental and read-only**. It targets th
 
 It does not create positions, mint NFTs, swap tokens, sign transactions, or submit transactions.
 
+## Experimental staking inspection
+
+Inspect the current RC38 Testnet xALPH staking state:
+
+    npm run staking-state
+
+The staking state reader currently:
+
+- reads the live xALPH contract state
+- reports total deposited ALPH and total xALPH supply
+- reports the physical ALPH contract balance
+- compares the physical balance delta with the minimal contract deposit
+- derives the current ALPH backing per xALPH
+- reports unstake duration
+- reports the maximum active unstake requests per user
+- reports the global last unstake vault index
+
+Inspect the active unstake vaults for a user:
+
+    npm run staking-user -- <address>
+
+The user staking reader currently:
+
+- reads active unstake vault indexes through the PowFi staking module
+- derives and reads each active unstake vault
+- reports total unstake amount and withdrawn amount
+- reports the claimable ALPH returned by the RC38 staking contract
+- reports unstake start time and duration
+
+The staking readers are intentionally read-only and target the staking contracts observed and runtime-validated with PowFi `0.0.1-rc.38` on Alephium Testnet
+
+They do not stake ALPH, start unstaking, claim ALPH, cancel unstaking, sign transactions, or submit transactions
+
 ## BAAL Testnet reference
 
 BAAL Token ID:
@@ -228,7 +261,7 @@ Install the exact SDK version used by this RC38 Testnet experiment:
 
 This repository intentionally focuses on **read-only PowFi RC38 tooling on Alephium Testnet**.
 
-CPMM tooling is the primary scope. CLMM support is limited to experimental read-only inspection and contract-backed quotes for the current RC38 Testnet deployment.
+CPMM tooling remains the primary scope. CLMM and staking support are limited to experimental read-only tooling for the current RC38 Testnet deployment.
 
 It does not claim compatibility with Mainnet, future PowFi releases, or future contract layouts.
 
